@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -exuo pipefail
 
 if ! ssh-add -L 2>&1 >/dev/null; then
   echo "No ssh key is loaded. Please add your ssh key before running this script!"
@@ -13,12 +13,50 @@ export EIRINI_STATION_GCP_JSON_KEY_PATH="$(mktemp)"
 pass eirini/gcp-eirini-station-json-key >"$EIRINI_STATION_GCP_JSON_KEY_PATH"
 trap "rm -f $EIRINI_STATION_GCP_JSON_KEY_PATH" EXIT
 
+recreate_gcp_vm() {
+  history_backup_file=$(mktemp)
+  trap "rm $history_backup_file" EXIT
+
+  backup_zsh_history "$history_backup_file"
+  vagrant destroy -f
+  vagrant_gcp up
+  restore_zsh_history $history_backup_file
+}
+
+vagrant_gcp() {
+  vagrant $@ --provider=google
+}
+
+get_vm_ip() {
+  echo $(vagrant ssh-config | grep HostName | awk '{print $2}')
+}
+
+backup_zsh_history() {
+  vm_ip=$(get_vm_ip)
+  if [ -z "$vm_ip" ]; then
+    echo "Could not determine running station IP, skipping history backup"
+  else
+    scp $EIRINI_STATION_USERNAME@$(get_vm_ip):/home/$EIRINI_STATION_USERNAME/.zsh_history $1 || true
+  fi
+}
+
+restore_zsh_history() {
+  # scp does not preserve file permissions so cat the history file over ssh instead
+  ssh $EIRINI_STATION_USERNAME@$(get_vm_ip) "cat > /home/$EIRINI_STATION_USERNAME/.zsh_history" <$1
+}
+
 pushd "$HOME/workspace/eirini-station"
 {
-  if [ $1 == "up" ]; then
-    vagrant $@ --provider=google
-  else
-    vagrant $@
-  fi
+  case "$1" in
+    "up")
+      vagrant_gcp up $@
+      ;;
+    "recreate")
+      recreate_gcp_vm
+      ;;
+    *)
+      vagrant $@
+      ;;
+  esac
 }
 popd
