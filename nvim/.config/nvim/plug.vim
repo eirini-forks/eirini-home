@@ -40,12 +40,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'nanotech/jellybeans.vim'
     " Config for built-in nvim lsp
     Plug 'neovim/nvim-lspconfig'
-    " auto completions
-    Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
-    " coq snippets
-    Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
     " lsp status helper
     Plug 'nvim-lua/lsp-status.nvim'
+
+    " nvim-cmp + its plugins
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+
     " use built-in syntax highlighting engine
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     " ANSI escape sequences concealed, but highlighted as specified

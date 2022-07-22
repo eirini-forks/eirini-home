@@ -176,9 +176,9 @@ set smartcase               "Override ignorecase if search contains caps
 " ------------------------ LUA MODULES SETUP --------------------------
 " load LSP
 " must be called *after* updating colorscheme, else errors aren't highlighted
-let g:coq_settings = {'auto_start': v:true, 'keymap': {'jump_to_mark': '<M-e>'}}
 
 lua require('config.lsp')
+lua require('config.cmp')
 
 lua require('lspsaga').init_lsp_saga()
 lua require('config.lspstatus')
@@ -481,9 +481,9 @@ let g:shfmt_fmt_on_save = 1
 
 " --------------------------------- Snippets  -------------------------------
 """ ultisnips
-let g:UltiSnipsExpandTrigger='<c-j>'
-let g:UltiSnipsJumpForwardTrigger='<c-f>'
-let g:UltiSnipsJumpBackwardTrigger='<c-b>'
+" let g:UltiSnipsExpandTrigger='<c-j>'
+" let g:UltiSnipsJumpForwardTrigger='<c-k>'
+" let g:UltiSnipsJumpBackwardTrigger='<c-j>'
 " --------------------------------------------------------------------------
 
 " --------------------------------- FuzzyFind  -----------------------------

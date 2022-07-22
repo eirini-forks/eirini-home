@@ -1,5 +1,4 @@
 local nvim_lsp = require 'lspconfig'
-local coq = require 'coq'
 
 -- disable inline diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -44,14 +43,16 @@ end
 -- and map buffer local keybindings when the language server attaches
 local servers = { "tsserver", "bashls" }
 for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup(coq.lsp_ensure_capabilities( {
-        on_attach = on_attach;
-    }))
+    nvim_lsp[lsp].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
 end
 
-nvim_lsp.gopls.setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach;
-    cmd = { 'gopls', '--remote=auto' };
+nvim_lsp.gopls.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { 'gopls', '--remote=auto' },
     settings = {
         gopls = {
             completeUnimported = true,
@@ -61,7 +62,7 @@ nvim_lsp.gopls.setup(coq.lsp_ensure_capabilities({
             buildFlags = {"-tags=e2e"},
         }
     };
-}))
+}
 
 -- Call before saving go files to add/remove imports automatically
 function LSP_organize_imports()
