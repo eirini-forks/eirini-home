@@ -19,13 +19,8 @@
 [apply]
   whitespace = nowarn
 [core]
-  ;pager = delta --theme zenburn
   editor = /usr/local/bin/nvim
   hooksPath = ~/workspace/git-hooks-core
-[interactive]
-  ;diffFilter = delta --theme zenburn --color-only
-[delta]
-  ;syntax-theme = zenburn
 [push]
   default = current
 [color "status"]

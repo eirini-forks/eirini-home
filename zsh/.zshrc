@@ -36,10 +36,6 @@ export PATH=$PATH:$HOME/.gem/ruby/2.5.0/bin
 # Custom scripts
 export PATH=$HOME/bin:$PATH
 
-# Golang
-export GOPATH=$HOME/go
-export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-
 # snap
 export PATH=$PATH:/snap/bin
 

@@ -31,7 +31,7 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>ca', ':Lspsaga code_action<CR>', opts)
     buf_set_keymap('v', '<leader>ca', ':<C-U>Lspsaga range_code_action<CR>', opts)
 
-    buf_set_keymap('n', '<leader>rn', ':Lspsaga rename<CR>', opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
 
     buf_set_keymap('n', '<leader>ee', ':Lspsaga show_line_diagnostics<CR>', opts)
     buf_set_keymap('n', '[g', ':Lspsaga diagnostic_jump_prev<CR>', opts)

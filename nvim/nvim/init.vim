@@ -218,7 +218,6 @@ set foldmethod=expr
 augroup AutoFormat
     autocmd!
     autocmd BufWritePre *.go lua vim.lsp.buf.format({timeout_ms=3000})
-	autocmd BufWritePre *.json PrettierAsync
 augroup END
 " ---------------------------------------------------------------------
 
