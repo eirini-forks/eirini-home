@@ -13,6 +13,7 @@ alias dockerlogin='docker login -u eiriniuser -p $(pass eirini/docker-hub)'
 alias flylogin='fly-login'
 alias flake-hunter='concourse-flake-hunter -c https://ci.korifi.cf-app.com -n main search'
 alias eirinisay='cowsay -f $HOME/cows/eirini.cow'
+alias urlenc='url-enc'
 
 cf-lite() {
   local context_name cluster_name
@@ -93,4 +94,8 @@ fly-login() {
   local team
   team=${1:-"main"}
   fly -t korifi login --team-name "$team" --concourse-url https://ci.korifi.cf-app.com/ </dev/tty
+}
+
+url-enc() {
+    printf %s "$*" | jq -sRr @uri
 }
