@@ -7,8 +7,6 @@ main() {
   configure_home "$@"
   generate_gitconfig
   compile_authorized_keys
-  cleanup_old_vim_plug
-  compile_gpg_keys
 }
 
 generate_gitconfig() {
@@ -53,21 +51,6 @@ compile_authorized_keys() {
   mv "$authorized_keys" "$HOME/.ssh/authorized_keys"
 }
 
-compile_gpg_keys() {
-  pushd "${HOME}/workspace/eirini-private-config/pass/eirini" >/dev/null || exit 1
-  {
-    cat .gpg-id | while read email; do
-      if gpg --list-keys "$email" >/dev/null; then
-        continue
-      fi
-
-      echo -e "1\n" | gpg --no-tty --command-fd 0 --keyserver keys.openpgp.org --search-keys $email
-      echo -e "trust\n5\ny\nsave\n" | gpg --no-tty --command-fd 0 --edit-key $email
-    done
-  }
-  popd >/dev/null || exit 1
-}
-
 configure_home() {
   local bundles action
   bundles=(tmux zsh git-hooks git util cows)
@@ -76,10 +59,6 @@ configure_home() {
   mkdir -p "$HOME/.config"
   install_bundles "$HOME" "${bundles[@]}"
   install_bundles "$HOME/.config" "nvim"
-}
-
-cleanup_old_vim_plug() {
-  rm -f "$HOME/.local/share/nvim/site/autoload/plug.vim"
 }
 
 install_bundles() {
