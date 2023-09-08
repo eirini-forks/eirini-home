@@ -40,6 +40,7 @@ export PATH=$HOME/bin:$PATH
 
 # Golang
 export PATH=$PATH:$HOME/go/bin
+export PATH=$PATH:/usr/lib/go-1.20/bin
 
 # snap
 export PATH=$PATH:/snap/bin
