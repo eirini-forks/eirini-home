@@ -19,7 +19,6 @@ ssh-agent-socket-available() {
 
 print-ssh-command() {
   username=$(whoami)
-  ip=$(curl -s ipecho.net/plain)
   session=$(tmux display-message -p '#S')
-  echo "ssh -A ${username}@${ip} -t 'tmux a -t ${session}'"
+  echo "ssh -A ${username}@${STATION_IP} -t 'tmux a -t ${session}'"
 }
