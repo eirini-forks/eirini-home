@@ -12,13 +12,14 @@ main() {
 
   export EIRINI_STATION_USERNAME="${STATION_USER:-$(ssh-add -L | cut -d ' ' -f 3 | cut -d @ -f 1)}"
 
-  provider="${1}"
+  provider="${1:-}"
   if [[ ! ${SUPPORTED_PROVIDERS[@]} =~ $provider ]]; then
-    echo "Provider $provider not supproted. Supported providers are $SUPPORTED_PROVIDERS"
+    echo "Provider $provider not supproted. Supported providers are ${SUPPORTED_PROVIDERS[@]}"
     exit 1
   fi
+  shift
 
-  command="${2}"
+  command="${1:-}"
   case "$command" in
 
     "auth" | "create" | "destroy" | "provision" | "start" | "stop" | "status" | "ssh" | "upload" | "download")
