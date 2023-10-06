@@ -1,9 +1,47 @@
 export PATH=$PATH:$HOME/.local/bin
 
-alias openstacksecret-create="openstack-secret-create"
-alias openstacksecret-get="openstack-secret-get"
-alias openstacksecret-update="openstack-secret-update"
-alias openstacksecret-delete="openstack-secret-delete"
+BOT_ENV_FILE="$HOME/.oh-my-zsh/custom/korifi-dev-bot.zsh"
+
+openstack-login() {
+  if [[ ! -f "$BOT_ENV_FILE" ]]; then
+    unset -m "OS_*"
+    export OS_AUTH_URL=https://identity-3.eu-de-1.cloud.sap/v3
+    export OS_IDENTITY_API_VERSION=3
+    export OS_PROJECT_NAME="korifi-dev"
+    export OS_PROJECT_DOMAIN_NAME="monsoon3"
+    export OS_USER_DOMAIN_NAME="monsoon3"
+    export OS_REGION_NAME=eu-de-1
+    export OS_COMPUTE_API_VERSION=2.60
+
+    echo Enter your SAP I/D user:
+    read -r OS_USERNAME
+    export OS_USERNAME
+    trap "unset OS_USERNAME" EXIT
+
+    echo Enter the SAP password for $OS_USERNAME:
+    read -sr OS_PASSWORD
+    export OS_PASSWORD
+    trap "unset OS_PASSWORD" EXIT
+
+    bot_secret_id="$(openstack secret list --name korifi-dev-bot -c "Secret href" --format value)"
+    bot_secret=$(openstack secret get -d "$bot_secret_id" -f value)
+
+   cat << EOF > "$BOT_ENV_FILE"
+export OS_AUTH_URL=https://identity-3.eu-de-1.cloud.sap/v3
+export OS_AUTH_TYPE=v3applicationcredential
+export OS_APPLICATION_CREDENTIAL_ID=$(jq -r .id <<<$bot_secret)
+export OS_APPLICATION_CREDENTIAL_SECRET=$(jq -r .secret <<<$bot_secret)
+EOF
+  fi
+
+  unset -m "OS_*"
+  source "$HOME/.zshrc"
+}
+
+openstack-logout() {
+  unset -m "OS_*"
+  rm -f "$BOT_ENV_FILE"
+}
 
 openstack-secret-create() {
   local name=$1
@@ -11,7 +49,7 @@ openstack-secret-create() {
 
   if [[ -z "$name" ]]; then
     echo "Missing secret name"
-    echo "Usage: openstacksecret-create <secret-name> [key=value]..."
+    echo "Usage: openstack-secret-create <secret-name> [key=value]..."
     return 1
   fi
 
@@ -35,7 +73,7 @@ openstack-secret-get() {
   local name=$1
   if [[ -z "$name" ]]; then
     echo "Missing secret name"
-    echo "Usage: openstacksecret-get <secret-name>"
+    echo "Usage: openstack-secret-get <secret-name>"
     return 1
   fi
 
@@ -48,7 +86,7 @@ openstack-secret-update() {
   shift
   if [[ -z "$name" ]]; then
     echo "Missing secret name"
-    echo "Usage: openstacksecret-update <secret-name> [key=value]..."
+    echo "Usage: openstack-secret-update <secret-name> [key=value]..."
     return 1
   fi
 
@@ -79,7 +117,7 @@ openstack-secret-delete() {
   local name=$1
   if [[ -z "$name" ]]; then
     echo "Missing secret name"
-    echo "Usage: openstacksecret-delete <secret-name>"
+    echo "Usage: openstack-secret-delete <secret-name>"
     return 1
   fi
 
