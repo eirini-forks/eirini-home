@@ -77,7 +77,7 @@ openstack-secret-get() {
     return 1
   fi
 
-  local id="$(openstack secret list --name $1 -c "Secret href" --format value)"
+  local id="$(openstack secret list --name $name -c "Secret href" --format value)"
   openstack secret get -d "$id" -f value | jq .
 }
 
@@ -106,10 +106,14 @@ openstack-secret-update() {
   local secret_json=$(openstack secret get -d "$id" -f value)
   local updated_secret_json="$(jq "$args" <<<$secret_json)"
 
-  openstack secret delete "$id"
+  if ! openstack secret delete "$id"; then
+      echo "Failed to delete secret $name (id=$id)"
+      return 1
+  fi
   if ! openstack secret store --name $name --secret-type passphrase --payload "$updated_secret_json"; then
-    echo Failed to update secret with name $name with json content:
-    echo $updated_secret_json | jq .
+    echo "Failed to update secret with name $name with json content:"
+    echo "$updated_secret_json" | jq .
+    return 1
   fi
 }
 
