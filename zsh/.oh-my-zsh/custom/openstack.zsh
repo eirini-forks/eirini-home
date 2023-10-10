@@ -24,13 +24,30 @@ openstack-login() {
     trap "unset OS_PASSWORD" EXIT
 
     bot_secret_id="$(openstack secret list --name korifi-dev-bot -c "Secret href" --format value)"
-    bot_secret=$(openstack secret get -d "$bot_secret_id" -f value)
+    if [[ $? -ne 0 ]]; then
+        return 1
+    fi
 
+    bot_secret=$(openstack secret get -d "$bot_secret_id" -f value)
+    if [[ $? -ne 0 ]]; then
+        return 1
+    fi
+
+    local app_credential_id=$(jq -r .id <<<$bot_secret)
+    if [[ $? -ne 0 ]] || [[ "$app_credential_id" == "null" ]]; then
+        echo "Failed to get app credential id"
+        return 1
+    fi
+    local app_credential_secret=$(jq -r .secret <<<$bot_secret)
+    if [[ $? -ne 0 ]] || [[ "$app_credential_secret" == "null" ]]; then
+        echo "Failed to get app credential secret"
+        return 1
+    fi
    cat << EOF > "$BOT_ENV_FILE"
 export OS_AUTH_URL=https://identity-3.eu-de-1.cloud.sap/v3
 export OS_AUTH_TYPE=v3applicationcredential
-export OS_APPLICATION_CREDENTIAL_ID=$(jq -r .id <<<$bot_secret)
-export OS_APPLICATION_CREDENTIAL_SECRET=$(jq -r .secret <<<$bot_secret)
+export OS_APPLICATION_CREDENTIAL_ID=$app_credential_id
+export OS_APPLICATION_CREDENTIAL_SECRET=$app_credential_secret
 EOF
   fi
 
