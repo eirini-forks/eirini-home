@@ -1,5 +1,3 @@
-alias pattach='tmux attach -t pairing'
-alias pmux='tmux new-session -s pairing'
 alias lsgrok='print-ngrok-tunnel'
 alias nginit='init-ngrok'
 
