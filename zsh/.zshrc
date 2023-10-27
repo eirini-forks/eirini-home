@@ -22,10 +22,6 @@ export GIT_DUET_ROTATE_AUTHOR=1
 export GIT_DUET_GLOBAL=true
 export GIT_DUET_CO_AUTHORED_BY=1
 
-# Editors
-export GIT_EDITOR="nvim"
-export KUBE_EDITOR="nvim"
-
 # Keys
 bindkey '\C-b' beginning-of-line
 bindkey "^[r" redo
