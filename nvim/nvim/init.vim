@@ -439,3 +439,26 @@ command! -bang GoGenerate call RunInQFList(<bang>0, "go generate " . shellescape
 command! -bang GolangCILint  call RunInQFList(<bang>0, "golangci-lint run")
 nnoremap <leader>el :GolangCILint<CR>
 " --------------------------------------------------------------------------
+"
+" --------------------- Copy to clipboard over SSH -------------------------
+" Copied and adapted from:
+" - https://sunaku.github.io/tmux-yank-osc52.html: the general idea of having
+"   a yank binary so that we can use it both in the shell and from vim comes
+"   from this article. However it turns out that after nvim 0.9 bang commands
+"   are no longer associated with the terminal that is running vim, meaninig
+"   that /dev/tty is not writeable.
+" - https://github.com/ojroques/vim-oscyank/blob/7250d51bda669ce1d7f334f2f5e6be012daddcde/plugin/oscyank.vim#L118:
+"   The problem with /dev/tty not being writeable can be solved by sending the
+"   escape sequence to stderr using the code from this plugin. We know we are
+"   running nvim so we do not need the complex logic in the plugin.
+" --------------------------------------------------------------------------
+function! Yank(text) abort
+  let escape = system('yank', a:text)
+  if v:shell_error
+    echoerr escape
+  else
+    call chansend(v:stderr, escape)
+  endif
+endfunction
+vnoremap <silent> <Leader>cp y:<C-U>call Yank(@0)<CR>
+" --------------------------------------------------------------------------
