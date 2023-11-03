@@ -28,6 +28,11 @@
 #
 # Written in 2014 by Suraj N. Kurapati <https://github.com/sunaku>
 # Also documented at https://sunaku.github.io/tmux-yank-osc52.html
+#
+# In order for this to work on iTerm2 on a mac it is important ot check the
+# `Preferences->General->Selection->Applications in terminal may access
+# clipboard` checkbox. Source:
+# https://stackoverflow.com/questions/10694516/vim-copy-mac-over-ssh/55321282#55321282
 
 input=$(cat "$@")
 input() { printf %s "$input"; }

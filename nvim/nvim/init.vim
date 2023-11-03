@@ -452,6 +452,10 @@ nnoremap <leader>el :GolangCILint<CR>
 "   The problem with /dev/tty not being writeable can be solved by sending the
 "   escape sequence to stderr using the code from this plugin. We know we are
 "   running nvim so we do not need the complex logic in the plugin.
+" - In order for this to work on iTerm2 on a mac it is important ot check the
+"   `Preferences->General->Selection->Applications in terminal may access
+"   clipboard` checkbox. Source:
+"   https://stackoverflow.com/questions/10694516/vim-copy-mac-over-ssh/55321282#55321282
 " --------------------------------------------------------------------------
 function! Yank(text) abort
   let escape = system('yank', a:text)
