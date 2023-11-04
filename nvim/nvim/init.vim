@@ -117,7 +117,7 @@ set softtabstop=4           "Number of spaces in tab when editing
 set expandtab               "Tabs are spaces
 set shiftwidth=4            "Indent with 2 spaces
 
-autocmd Filetype yaml,json,typescript,typescriptreact,ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
+autocmd Filetype yaml,json,typescript,typescriptreact,ruby,sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
 autocmd Filetype go setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
 " ---------------------------------------------------------------------
 
