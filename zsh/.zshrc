@@ -22,12 +22,6 @@ export GIT_DUET_ROTATE_AUTHOR=1
 export GIT_DUET_GLOBAL=true
 export GIT_DUET_CO_AUTHORED_BY=1
 
-# Keys
-bindkey '\C-b' beginning-of-line
-bindkey "^[r" redo
-bindkey "\eOH" beginning-of-line
-bindkey "\eOF" end-of-line
-
 # Vim stuff
 export PATH=$PATH:$HOME/.gem/ruby/2.5.0/bin
 
