@@ -14,3 +14,24 @@ purge-kubeconfig() {
   fi
 }
 
+kshell() {
+  local name image
+  name="shell-$(uuidgen)"
+  image="${1:-ubuntu}"
+
+  kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $name
+spec:
+  containers:
+  - name: shell
+    image: $image
+    command: ["sleep", "infinity"]
+EOF
+  trap "kubectl delete pod $name --wait=false" EXIT
+
+  kubectl wait "pods/$name" --for condition=Ready --timeout=90s
+  kubectl exec --stdin --tty "$name" -- /bin/bash
+}
