@@ -16,7 +16,7 @@ purge-kubeconfig() {
 
 kshell() {
   local name image
-  name="shell-$(uuidgen)"
+  name="shell-$(uuidgen | tr '[:upper:]' '[:lower:]')"
   image="${1:-ubuntu}"
 
   kubectl apply -f - <<EOF
