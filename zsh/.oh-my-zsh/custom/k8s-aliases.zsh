@@ -35,3 +35,16 @@ EOF
   kubectl wait "pods/$name" --for condition=Ready --timeout=90s
   kubectl exec --stdin --tty "$name" -- /bin/bash
 }
+
+finalize() {
+  local kind objects
+  kind="$1"
+
+  objects=$(kubectl get "$kind" --all-namespaces --no-headers | awk '{print $1" "$2}')
+  while IFS= read -r line; do
+    namespace=$(cut -d' ' -f 1 <<<$line)
+    name=$(cut -d' ' -f 2 <<<$line)
+
+    kubectl patch -n "$namespace" "$kind" "$name" -p '{"metadata":{"finalizers":null}}' --type=merge
+  done <<<"$objects"
+}
