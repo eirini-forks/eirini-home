@@ -28,8 +28,6 @@ export PATH=$PATH:$HOME/.gem/ruby/2.5.0/bin
 # Custom scripts
 export PATH=$HOME/bin:$PATH
 
-# Golang
-export PATH=$PATH:$HOME/go/bin
 
 # snap
 export PATH=$PATH:/snap/bin
