@@ -100,6 +100,9 @@ endfunc
 " shell-like navigation while in normal mode
 inoremap <c-b> <c-\><c-o>h
 inoremap <c-f> <c-\><c-o>l
+
+" delete char to the right with <C-d>
+inoremap <C-d> <Del>
 " ---------------------------------------------------------------------
 
 " ------------------------------ COLORS ------------------------------
