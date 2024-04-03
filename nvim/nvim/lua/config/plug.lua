@@ -300,4 +300,15 @@ require("lazy").setup({
     'vmware-tanzu/ytt.vim',
     -- Runs shfmt to auto format the current buffer
     {'z0mbix/vim-shfmt', ft = 'sh' },
+    -- Refactoring utility
+    {
+        "ThePrimeagen/refactoring.nvim",
+        dependencies = {
+          "nvim-lua/plenary.nvim",
+          "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+          require("refactoring").setup()
+        end,
+    },
 })
