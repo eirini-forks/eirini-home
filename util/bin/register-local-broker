@@ -1,0 +1,10 @@
+#!/bin/bash
+
+broker_name="$1"
+
+app_guid="$(cf app sample-broker --guid)"
+service_json="$(kubectl get services --all-namespaces -l korifi.cloudfoundry.org/app-guid=$app_guid -o jsonpath='{.items[0]}')"
+service_name="$(jq -r .metadata.name <<<$service_json)"
+service_namespace="$(jq -r .metadata.namespace <<<$service_json)"
+
+cf create-service-broker $broker_name broker-user broker-password "http://${service_name}.${service_namespace}.svc.cluster.local:8080"
