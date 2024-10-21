@@ -25,13 +25,15 @@ fix-ssh() {
 
   socks_by_id="$(jq -n ${args[@]} '$ARGS.named')"
 
-  PS3='Select id: '
-  select id in "${ids[@]}"; do
-    sock="$(jq -r --arg ID "$id" '.[$ID]' <<<$socks_by_id)"
-    if [[ "$sock" != "null" ]]; then
-      break
-    fi
-  done
+  if [[ ${#ids[@]} -gt 1 ]];then
+    PS3='Select id: '
+    select id in "${ids[@]}"; do
+      sock="$(jq -r --arg ID "$id" '.[$ID]' <<<$socks_by_id)"
+      if [[ "$sock" != "null" ]]; then
+        break
+      fi
+    done
+  fi
 
   ensure-ssh-identity "$sock"
 }
