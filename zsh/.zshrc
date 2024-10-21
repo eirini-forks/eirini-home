@@ -69,7 +69,7 @@ eval "$(direnv hook zsh)"
 
 # Fix forwarded sockets socket
 if ! ssh-agent-socket-available; then
-  fix-ssh
+  ensure-ssh-identity
 fi
 
 export VAULT_ADDR=https://vault.korifi.cf-app.com:8200
