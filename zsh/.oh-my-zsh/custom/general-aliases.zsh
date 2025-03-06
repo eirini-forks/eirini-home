@@ -13,3 +13,7 @@ flylogin() {
 urlenc() {
     printf %s "$*" | jq -sRr @uri
 }
+
+dockerlogin() {
+    docker login -u "$(vault kv get -field=username concourse/main/release-pipeline/dockerhub-auth)" -p "$(vault kv get -field=password concourse/main/release-pipeline/dockerhub-auth)"
+}
