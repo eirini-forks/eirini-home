@@ -1,29 +1,6 @@
 #!/bin/bash
 
-export GO_FILE="$(mktemp /tmp/go-backtick-XXXXXX.go)"
-
-trap "rm -f $GO_FILE" EXIT
-
-cat >$GO_FILE <<EOF
-package main
-
-import (
-	"fmt"
-	"io"
-	"os"
-)
-
-func main() {
-	bytes, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		panic(err)
-	}
-
-  fmt.Println("\`\`\`")
-  fmt.Println(string(bytes))
-  fmt.Println("\`\`\`")
-
-}
-EOF
-
-go run $GO_FILE
+echo "\`\`\`"
+cat <&0
+echo
+echo "\`\`\`"
