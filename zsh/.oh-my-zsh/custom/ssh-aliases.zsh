@@ -47,3 +47,7 @@ pssh() {
   session=$(tmux display-message -p '#S')
   echo "ssh -A ${username}@${STATION_IP} -t 'tmux a -t ${session}'"
 }
+
+slack-pssh() {
+  echo "\`$(pssh)\`"
+}
