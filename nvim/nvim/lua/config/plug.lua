@@ -311,13 +311,39 @@ require("lazy").setup({
           require("refactoring").setup()
         end,
     },
-    -- ytt syntax highlighting
-    'github/copilot.vim',
+    -- copilot
+    {
+        "zbirenbaum/copilot.lua",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    auto_trigger = true,
+                    keymap = {
+                        accept = "<tab>",
+                        -- next = "<C-j>",
+                        prev = "<C-k>",
+                        dismiss = "<C-\\>",
+                    },
+                },
+                panel = {
+                    auto_refresh = true,
+                },
+            })
+        end,
+    },
+    -- copilot completion
+    {
+      "zbirenbaum/copilot-cmp",
+      config = function ()
+        require("copilot_cmp").setup()
+      end
+    },    --
     -- copilot chat
     {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+      { "zbirenbaum/copilot.lua" }, -- or zbirenbaum/copilot.lua
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
     },
     build = "make tiktoken", -- Only on MacOS or Linux
