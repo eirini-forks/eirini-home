@@ -23,7 +23,7 @@ openstack-login() {
     export OS_PASSWORD
     trap "unset OS_PASSWORD" EXIT
 
-    bot_secret_id="$(openstack secret list --name korifi-dev-bot -c "Secret href" --format value)"
+    bot_secret_id="$(openstack secret list --name korifi-dev-bot-$USER -c "Secret href" --format value)"
     if [[ $? -ne 0 ]]; then
         return 1
     fi
