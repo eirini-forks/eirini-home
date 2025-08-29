@@ -48,3 +48,11 @@ finalize() {
     kubectl patch -n "$namespace" "$kind" "$name" -p '{"metadata":{"finalizers":null}}' --type=merge
   done <<<"$objects"
 }
+
+ktouch() {
+    objYaml=$(cat /dev/stdin)
+    ns=$(yq .metadata.namespace <<<$objYaml)
+    kind=$(yq .kind <<<$objYaml)
+    name=$(yq .metadata.name <<<$objYaml)
+    kubectl --namespace "$ns" label "$kind" "$name" --overwrite touched-at="$(date +%Y-%m-%d-%H-%M-%S-%N)"
+}
