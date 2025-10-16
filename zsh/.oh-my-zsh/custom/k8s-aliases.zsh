@@ -17,7 +17,8 @@ purge-kubeconfig() {
 kshell() {
   local name image
   name="shell-$(uuidgen | tr '[:upper:]' '[:lower:]')"
-  image="${1:-ubuntu}"
+  image="$1"
+  shift
 
   kubectl apply -f - <<EOF
 apiVersion: v1
@@ -33,7 +34,7 @@ EOF
   trap "kubectl delete pod $name --wait=false" EXIT
 
   kubectl wait "pods/$name" --for condition=Ready --timeout=90s
-  kubectl exec --stdin --tty "$name" -- /bin/bash
+  kubectl exec --stdin --tty "$name" -- $*
 }
 
 finalize() {
