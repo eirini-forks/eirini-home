@@ -1,5 +1,3 @@
-local nvim_lsp = require 'lspconfig'
-
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -92,17 +90,17 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>ea', ":lua require'telescope.builtin'.diagnostics{severity = 'error'}<cr>", opts)
 end
 
--- Use a loop to conveniently both setup defined servers
--- and map buffer local keybindings when the language server attaches
-local servers = { "ts_ls", "bashls" }
-for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-    }
-end
+vim.lsp.config('ts_ls', {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
 
-nvim_lsp.gopls.setup {
+vim.lsp.config('bashls', {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config('gopls', {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { 'gopls', '--remote=auto' },
@@ -121,7 +119,8 @@ nvim_lsp.gopls.setup {
             },
         }
     },
-}
+})
+vim.lsp.enable('gopls', 'bashls', 'ts_ls')
 
 function LSP_organize_imports()
     local params = vim.lsp.util.make_range_params()
