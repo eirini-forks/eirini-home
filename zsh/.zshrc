@@ -45,20 +45,6 @@ precmd_pipestatus() {
     echo -n ${exit_status}' '
 }
 
-# Set Pure ZSH theme
-fpath+=$HOME/.zsh/pure
-autoload -U promptinit; promptinit
-prompt pure
-
-# Remove pure theme state (user@hostname) from prompt
-prompt_pure_state=()
-
-# Show exit code of last command as a separate prompt character
-PROMPT='%(?.%F{#32CD32}.%F{red}❯%F{red})❯%f '
-
-# Show exit status before prompt
-PROMPT='%F{red}$(precmd_pipestatus)'$PROMPT
-
 # Fuzzy Find
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS='--height 15% --border'
