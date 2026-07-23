@@ -305,6 +305,7 @@ require("lazy").setup({
         "ThePrimeagen/refactoring.nvim",
         dependencies = {
           "nvim-lua/plenary.nvim",
+          "lewis6991/async.nvim",
           "nvim-treesitter/nvim-treesitter",
         },
         config = function()
@@ -345,6 +346,19 @@ require("lazy").setup({
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or zbirenbaum/copilot.lua
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+    },
+    {
+      "nvim-telescope/telescope-ui-select.nvim",
+      config = function()
+        require("telescope").setup({
+          extensions = {
+            ["ui-select"] = {
+              require("telescope.themes").get_dropdown({}),
+            },
+          },
+        })
+        require("telescope").load_extension("ui-select")
+      end,
     },
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {

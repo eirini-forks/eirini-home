@@ -2,27 +2,21 @@
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- configure diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = false,
-		underline = true,
-		signs = true,
-    }
-)
+vim.diagnostic.config({
+  underline = true,
+  virtual_text = false,
+  signs = true,
+})
 
 local _border = "single"
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, {
-    border = _border
-  }
-)
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or "rounded" -- Задава закръглени рамки на всички floating прозорци
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-  vim.lsp.handlers.signature_help, {
-    border = _border
-  }
-)
 
 vim.diagnostic.config{
   float={border=_border},
@@ -90,37 +84,46 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>ea', ":lua require'telescope.builtin'.diagnostics{severity = 'error'}<cr>", opts)
 end
 
-vim.lsp.config('ts_ls', {
-    on_attach = on_attach,
-    capabilities = capabilities,
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+    callback = function(ev)
+        if type(on_attach) == "function" then
+            on_attach(vim.lsp.get_client_by_id(ev.data.client_id), ev.buf)
+        end
+    end,
 })
 
-vim.lsp.config('bashls', {
-    on_attach = on_attach,
-    capabilities = capabilities,
-})
+-- Use a loop to conveniently both setup defined servers
+-- and map buffer local keybindings when the language server attaches
+local servers = { "ts_ls", "bashls" }
+for _, lsp in ipairs(servers) do
+    if vim.lsp.enable then
+        vim.lsp.enable(lsp)
+    end
+end
 
-vim.lsp.config('gopls', {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    cmd = { 'gopls', '--remote=auto' },
-    settings = {
-        gopls = {
-            completeUnimported = true,
-            staticcheck = true,
-            gofumpt = true,
-            analyses = {
-                nilness = true,
-                shadow = true,
-                unusedparams = true,
-                unusedwrite = true,
-                useany = true,
-                unusedvariable = true,
+if vim.lsp.config and vim.lsp.enable then
+    vim.lsp.config('gopls', {
+        cmd = { 'gopls', '--remote=auto' },
+        settings = {
+            gopls = {
+                completeUnimported = true,
+                staticcheck = true,
+                gofumpt = true,
+                analyses = {
+                    nilness = true,
+                    shadow = true,
+                    unusedparams = true,
+                    unusedwrite = true,
+                    useany = true,
+                    unusedvariable = true,
+                },
             },
-        }
-    },
-})
-vim.lsp.enable('gopls', 'bashls', 'ts_ls')
+        },
+    })
+
+    vim.lsp.enable('gopls')
+end
 
 function LSP_organize_imports()
     local params = vim.lsp.util.make_range_params()
