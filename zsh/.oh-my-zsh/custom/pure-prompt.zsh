@@ -22,3 +22,16 @@ PROMPT+='%(?.%F{#32CD32}.%F{red}❯%F{red})❯%f '
 
 # Show exit status before prompt
 PROMPT='%F{red}$(precmd_pipestatus)'$PROMPT
+
+
+# MacOS only (show pwd in prompt)
+if [[ "$(uname)" == "Darwin" ]]; then
+    # First line: pwd in cyan + git status (if any) on slot 14
+    PROMPT_TOP='%F{cyan}%~%f %(14V. %F{${prompt_pure_git_branch_color}}%14v%(15V.%F{$prompt_pure_colors[git:dirty]}%15v.)%f.)'
+
+    # Second line: last command status and red arrow ❯
+    PROMPT_BOTTOM='%(?.%F{#32CD32}.%F{red}❯%F{red})❯%f '
+
+    # Put all that together with a new line in between
+    PROMPT="${PROMPT_TOP}"$'\n'"${PROMPT_BOTTOM}"
+fi
